@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>音乐播放器</title>
+    <link type="text/css" rel="stylesheet" href="main.css"/>
+    <link type="text/css" rel="stylesheet" href="top.css"/>
+    <link type="text/css" rel="stylesheet" href="middle.css"/>
+    <link type="text/css" rel="stylesheet" href="bottom.css"/>
+    <script type="text/javascript" src="js/canvas.js"></script>
+    <script type="text/javascript" src="js/jquery-1.10.2.js"></script>
+    <script type="text/javascript">
+        var pasused = false;
+        window.onload=function () {
+            loadBG();
+            var playBt = document.getElementsByTagName("em");
+            for(var i=0;i<playBt.length;i++){
+                playBt[i].addEventListener("click",function (event) {
+                    var audio=document.getElementById("audio");//获得音频元素
+                    var songUrl=event.target.getAttribute("songUrl");
+                    audio.src=songUrl;
+                    if(pasused==false){
+                        audio.play();
+                        audioPlay();
+                        pasused=true;
+                        $(this).css("background-position","0 -30px");
+                        $(this).attr("isplay","1");
+                    }else{
+                        audio.pause();
+                        pasused=false;
+                        audioPause();
+                        $(this).css("background-position","");
+                        $(this).attr("isplay","0");
+                    }
+                    $(".songList").css("background-color","#f5f5f5");
+                    $(this).css({
+                        "background":'url("img/T1X4JEFq8qXXXaYEA_-11-12.gif") no-repeat',
+                        "color":"transparent"
+                    });
+                    audio.addEventListener('play',audioPlay,false);
+                    audio.addEventListener('pause',audioPause,false);
+
+
+                    /*底部显示歌曲信息*/
+                    var songName=$(event.target).parent().parent().find(".colsn").html();
+                    var singerName =$(event.target).parent().parent().find(".colcn").html();
+                    $(".songName").html(songName);
+                    $(".songPlayer").html(singerName);
+                });
+            }
+            /*底部播放按钮*/
+            $(".playBtn").click(function(){
+                var p = $(this).attr("isplay");
+                if (p==0) {
+                    $(this).css("background-position","0 -30px");
+                    $(this).attr("isplay","1");
+                };
+                if (p==1) {
+                    $(this).css("background-position","");
+                    $(this).attr("isplay","0");
+                };
+                if(audio.paused)
+                    audio.play();
+                else
+                    audio.pause();
+            });
+        }
+        /*首尾模糊效果*/
+        function loadBG(){
+            //alert();
+            // stackBlurImage('canvas1', 'canvas', 60, false);
+            var c=document.getElementById("canvas");
+            var ctx=c.getContext("2d");
+            var img=document.getElementById("canvas1");
+            ctx.drawImage(img,45,45,139,115,0,0,1366,700);
+            stackBlurCanvasRGBA('canvas',0,0,1366,700,60);
+        }
+
+
+        function audioPlay(ev){
+            $(".iplay").css("background",'url("img/playing.gif") 0 0');
+            $(".playBtn").css("background-position","0 -30px");
+            $(".playBtn").attr("isplay","1");
+        }
+        function audioPause(ev){
+            $(".iplay").css("background","");
+            // $(".start em").css({
+            // 	"background":'url("css/images/pause.png") no-repeat 50% 50%',
+            // 	"color":"transparent"
+            // });
+        }
+
+    </script>
+</head>
+<body>
+    <div class="blur">
+        <canvas style="width:100%;height:100%;opacity:0;" width="1366" height="700" id="canvas"></canvas>
+        <img id="canvas1"  src="backgrounds/2.jpg" style="display: none"/>
+    </div>
+    <div class="main">
+        <div class="top" id="top">
+            <a href="javascript:void(0)" class="logo"></a>
+            <div class="search">
+                <div  class="searchBtn"></div>
+                <input type="text" class="searchTxt">
+            </div>
+        </div>
+        <div id="middle" class="middle">
+            <div class="middleAll" class="middleAll">
+                <div id="ml" class="ml">
+                    <div class="menu">
+                        <ul class="menuUL">
+                            <li class="menuLi">
+                                <a href="javascript:void(0)">
+                                    <i class="icon iplay"></i>
+                                    正在播放
+                                </a>
+                            </li>
+                            <li class="menuLi">
+                                <a href="javascript:void(0)">
+                                    <i class="icon ihst"></i>
+                                    播放历史
+                                </a>
+                            </li>
+                            <li class="menuLi">
+                                <a href="javascript:void(0)">
+                                    <i class="icon ishouc"></i>
+                                    我收藏的单曲
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="collectOut">
+                        <span class="colS">我创建的精选集</span>
+                        <a href="javascript:void(0)" class="colA"></a>
+                    </div>
+                    <div class="cellectList"></div>
+                    <audio id="audio" src="audios/qingtian.mp3"></audio>
+                </div>
+                <div id="mc" class="mc">
+                    <div class="playHd">
+                        <div class="phInner">
+                            <div class="col">歌曲(5)</div>
+                            <div class="col">演唱者</div>
+                            <div class="col">专辑</div>
+                        </div>
+                    </div>
+                    <div class="playBd">
+                        <div class="scrollView">
+                            <ul class="songUL">
+                                <li class="songList">
+                                    <div class="songLMain">
+                                        <div class="check">
+                                            <input class="checkIn" type="checkbox" select="0">
+                                        </div>
+                                        <div class="start" >
+                                            <em sonN="1" songUrl="audios/qingtian.mp3">1</em>
+                                        </div>
+                                        <div class="songBd">
+                                            <div class="col colsn">晴天</div>
+                                            <div class="col colcn">刘瑞琦</div>
+                                            <div class="col">再次寻找周杰伦</div>
+                                        </div>
+                                        <div class="control">
+                                            <a class="cicon love"></a>
+                                            <a class="cicon more" style="display:none"></a>
+                                            <a class="cicon dele" style="display:none"></a>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="songList">
+                                    <div class="songLmain">
+                                        <div class="check">
+                                            <input class="checkIn" type="checkbox" select="0">
+                                        </div>
+                                        <div class="start">
+                                            <em sonN="2" songUrl="audios/buzailianxi.mp3">2</em>
+                                        </div>
+                                        <div class="songBd">
+                                            <div class="col colsn">不再联系</div>
+                                            <div class="col colcn"> 夏天alex</div>
+                                            <div class="col">分手信</div>
+                                        </div>
+                                        <div class="control">
+                                            <a class="cicon love"></a>
+                                            <a class="cicon more"></a>
+                                            <a class="cicon dele"></a>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="songList">
+                                    <div class="songLmain">
+                                        <div class="check">
+                                            <input class="checkIn" type="checkbox" select="0">
+                                        </div>
+                                        <div class="start">
+                                            <em sonN="3" songUrl="audios/zmczx.mp3">3</em>
+                                        </div>
+                                        <div class="songBd">
+                                            <div class="col colsn">追梦赤子心</div>
+                                            <div class="col colcn"> GALA</div>
+                                            <div class="col">那年那兔那些事儿</div>
+                                        </div>
+                                        <div class="control">
+                                            <a class="cicon love"></a>
+                                            <a class="cicon more"></a>
+                                            <a class="cicon dele"></a>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="songList">
+                                    <div class="songLmain">
+                                        <div class="check">
+                                            <input class="checkIn" type="checkbox" select="0">
+                                        </div>
+                                        <div class="start">
+                                            <em sonN="4" songUrl="audios/xiaoxingyun.mp3">4</em>
+                                        </div>
+                                        <div class="songBd">
+                                            <div class="col colsn">小幸运</div>
+                                            <div class="col colcn">田馥甄</div>
+                                            <div class="col">我的少女时代</div>
+                                        </div>
+                                        <div class="control">
+                                            <a class="cicon love"></a>
+                                            <a class="cicon more"></a>
+                                            <a class="cicon dele"></a>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="playFt">
+                        <div class="track">
+                            <div class="uiCheck">
+                                <input class="checkAll" type="checkbox" select="0">
+                            </div>
+                            <div class="uiItem">
+                                <a href="#" class="itIcon itDele">删除</a>
+                            </div>
+                            <div class="uiItem">
+                                <a href="#" class="itIcon itShou">收藏</a>
+                            </div>
+                            <div class="uiItem">
+                                <a href="#" class="itIcon itJin">添加到精选集</a>
+                            </div>
+                            <div class="uiItem">
+                                <a href="#" class="itIcon itMore">更多</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="mr">
+
+                </div>
+            </div>
+        </div>
+        <div id="bottom" class="bottom">
+            <div class="playerWrap">
+                <div class="playerCon">
+                    <a href="#" class="pbtn prevBtn"></a>
+                    <a href="#" class="pbtn playBtn" isplay="0"></a>
+                    <a href="#" class="pbtn nextBtn"></a>
+                    <a href="#" class="mode"></a>
+                </div>
+                <div class="playInfo">
+                    <div class="trackInfo">
+                        <a href="#" class="songName">晴天</a>
+                        -
+                        <a href="#" class="songPlayer">刘瑞琦</a>
+                        <div class="trackCon">
+                            <a href="#" class="tc1"></a>
+                            <a href="#" class="tc2"></a>
+                            <a href="#" class="tc3"></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="playerLength">
+                    <div class="position">00:00</div>
+                    <div class="progress">
+                        <div class="pro1"></div>
+                        <div class="pro2">
+                            <a href="#" class="dian"></a>
+                        </div>
+                    </div>
+                    <div class="duration">03:35</div>
+                </div>
+            </div>
+            <div class="vol">
+                <a href="#" class="pinBtn"></a>
+                <div class="volm">
+                    <div class="volSpeaker"></div>
+                    <div class="volControl">
+                        <a href="#" class="dian2"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
